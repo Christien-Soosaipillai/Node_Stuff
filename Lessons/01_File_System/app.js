@@ -2,7 +2,7 @@ const fs = require('fs');
 
 //reading files
 //asynchronous doesnt hold up the rest of the javascript
-fs.readFile('./sample.txt', (err, data)=>{		//args: (relative path to file, function to use on file read)
+fs.readFile('./files/sample.txt', (err, data)=>{		//args: (relative path to file, function to use on file read)
 	if(err){
 		console.log(err);
 	}else{
@@ -11,12 +11,12 @@ fs.readFile('./sample.txt', (err, data)=>{		//args: (relative path to file, func
 });			
 
 //writing files: this will replace the file text NOT add onto
-fs.writeFile('./sample.txt', 'Hello World', () =>{
+fs.writeFile('./files/sample.txt', 'Hello World', () =>{
 	console.log("File was written");
 });
 
 //If the file doesnt exist then it is created for us
-fs.writeFile('./sample2.txt', 'Hello World', () =>{
+fs.writeFile('./files/sample2.txt', 'Hello World', () =>{
 	console.log("File was written");
 });
 
@@ -41,8 +41,8 @@ if(!fs.existsSync('./assets')){
 }
 
 //deleting files
-if(fs.existsSync('./sample2.txt')){
-	fs.unlink('./sample2.txt', (err)=>{
+if(fs.existsSync('./files/sample2.txt')){
+	fs.unlink('./files/sample2.txt', (err)=>{
 		if(err){
 			console.log(err);
 		}else{
@@ -50,3 +50,25 @@ if(fs.existsSync('./sample2.txt')){
 		}
 	});
 }
+
+//File Streams
+//readStream
+const rs = fs.createReadStream('./files/lorem.txt', {encoding: 'utf-8'});
+
+rs.on('data', (chunk) =>{
+	console.log("----new chunk----");
+	console.log(chunk);
+});
+
+//write stream
+const ws = fs.createWriteStream('./files/writing.txt');
+const count = 1000;
+
+for(let i = 0; i < count; i++){
+	// ws.write("\nIteration\n");
+	ws.write(i+"\n");
+}
+
+//pipe: take everything from readstream and send to writestream
+rs.pipe(ws);
+
